@@ -3,7 +3,7 @@ const Book = require("../models/Book.model");
 const router = require("express").Router();
 
 
-// READ: List all books first
+// READ: List all books, first
 router.get("/books", (req, res, next) => {
 
   Book.find()
@@ -24,7 +24,7 @@ router.get("/books", (req, res, next) => {
 });
 
 
-// CREATE: Render form to create one book third
+// CREATE: Render form to create one book, third
 router.get("/books/create", (req, res) => {
   res.render("books/book-create")
 })
@@ -38,17 +38,17 @@ router.post("/books/create", (req, res) => {
   };
 
   Book.create(bookDetails)
-    .then( () => {
+    .then(() => {
       res.redirect("/books");
     })
-    .catch( (error) => {
+    .catch((error) => {
       console.log("Error creating book in the DB", error);
       next(error);
     })
 })
 
 
-// READ: Book details second
+// READ: Book details, second
 router.get("/books/:bookId", (req, res) => {
   const bookId = req.params.bookId;
 
@@ -63,6 +63,38 @@ router.get("/books/:bookId", (req, res) => {
 
 })
 
+// UPDATE: Render form, forth
 
+router.get("/books/:bookId/edit", (req, res) => {
+  //const bookId = req.params.bookId;
+  const { bookId } = req.params;
+
+  Book.findById(bookId)
+    .then((bookDetails) => {
+      res.render("books/book-edit", bookDetails);
+    })
+    .catch((error) => {
+      console.log("Error getting book details from DB", error);
+      next(error);
+    })
+});
+
+// UPDATE: Process form
+router.post("/books/:bookId/edit", (req, res) => {
+
+  const { bookId } = req.params;
+  const { title, description, author, rating } = req.body;
+
+  Book.findByIdAndUpdate(bookId, { title, description, author, rating })
+  .then(() => {
+    res.redirect("/books");
+    //res.redirect(`/books/${bookId}`); // redirect to book details page
+  })
+  .catch((error) => {
+    console.log("Error updating book in the DB", error);
+    next(error);
+  })
+});
+  
 
 module.exports = router;
