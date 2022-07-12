@@ -28,7 +28,17 @@ router.get("/books", (req, res, next) => {
 
 // CREATE: Render form to create one book, third
 router.get("/books/create", (req, res) => {
-  res.render("books/book-create")
+
+
+  Author.find()
+  .then( authorsArr => {
+    res.render("books/book-create", {authorsArr});
+  })
+  .catch( (error) => {
+    console.log("Error getting authors from DB", error);
+    next(error);
+  })
+
 })
 
 router.post("/books/create", (req, res) => {
@@ -72,6 +82,7 @@ router.get("/books/:bookId/edit", (req, res) => {
   //const bookId = req.params.bookId;
   const { bookId } = req.params;
 
+
   Book.findById(bookId)
     .then((bookDetails) => {
       res.render("books/book-edit", bookDetails);
@@ -89,29 +100,29 @@ router.post("/books/:bookId/edit", (req, res) => {
   const { title, description, author, rating } = req.body;
 
   Book.findByIdAndUpdate(bookId, { title, description, author, rating })
-  .then(() => {
-    res.redirect("/books");
-    //res.redirect(`/books/${bookId}`); // redirect to book details page
-  })
-  .catch((error) => {
-    console.log("Error updating book in the DB", error);
-    next(error);
-  })
+    .then(() => {
+      res.redirect("/books");
+      //res.redirect(`/books/${bookId}`); // redirect to book details page
+    })
+    .catch((error) => {
+      console.log("Error updating book in the DB", error);
+      next(error);
+    })
 });
 
 // DELETE: delete book, fifth
 router.post("/books/:bookId/delete", (req, res) => {
-  const {bookId} = req.params;
+  const { bookId } = req.params;
 
   Book.findByIdAndRemove(bookId)
-    .then( () => {
+    .then(() => {
       res.redirect('/books');
     })
-    .catch( (error) => {
+    .catch((error) => {
       console.log("Error deleting book from DB", error);
       next(error);
     })
 })
-  
+
 
 module.exports = router;
