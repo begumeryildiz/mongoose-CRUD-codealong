@@ -1,11 +1,15 @@
 const { Schema, model } = require("mongoose");
 
+
 const bookSchema = new Schema(
   {
     title: String,
-    description: String,
-    author: String,
-    rating: Number,       
+    description: String,    
+    rating: Number,     
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "Author"
+    } 
   },   
   {
     timestamps: true,
@@ -15,3 +19,8 @@ const bookSchema = new Schema(
 const Book = model("Book", bookSchema);
 
 module.exports = Book;
+
+
+
+
+
