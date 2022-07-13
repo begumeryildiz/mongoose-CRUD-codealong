@@ -71,6 +71,8 @@ router.get("/login", (req, res, next) => {
 
 router.post("/login", (req, res, next) => {
 
+  //console.log('SESSION........', req.session);
+
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -86,9 +88,8 @@ router.post("/login", (req, res, next) => {
         return;
       } else if (bcryptjs.compareSync(password, userFromDB.passwordHash)) {
         //login sucessful
-        // req.session.currentUser = userFromDB;
-        // res.redirect("/user-profile");
-        res.render('auth/user-profile', {user: userFromDB});
+        req.session.currentUser = userFromDB;
+        res.redirect("/user-profile");
       } else {
         //login failed (password doesn't match)
         res.render('auth/login', { errorMessage: 'Incorrect credentials.' });
@@ -105,7 +106,7 @@ router.post("/login", (req, res, next) => {
 
 // Profile page
 router.get('/user-profile', (req, res, next) => {
-  res.render('auth/user-profile');
+  res.render('auth/user-profile', {user: req.session.currentUser});
 });
 
 module.exports = router;
