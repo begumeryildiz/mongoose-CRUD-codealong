@@ -101,7 +101,13 @@ router.post("/login", (req, res, next) => {
     });
 })
 
-
+// Logout
+router.post('/logout', (req, res, next) => {
+    req.session.destroy(err => {
+      if (err) next(err);
+      res.redirect('/');
+    });
+});
 
 
 // Profile page
