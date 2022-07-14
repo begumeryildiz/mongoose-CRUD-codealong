@@ -4,6 +4,10 @@ const Author = require("../models/Author.model");
 const router = require("express").Router();
 
 
+const checkIfLoggedIn = require("../middleware/checkIfLoggedIn");
+
+
+
 // READ: List all books, first
 router.get("/books", (req, res, next) => {
 
@@ -27,21 +31,21 @@ router.get("/books", (req, res, next) => {
 
 
 // CREATE: Render form to create one book, third
-router.get("/books/create", (req, res) => {
+router.get("/books/create", checkIfLoggedIn, (req, res) => {
 
 
   Author.find()
-  .then( authorsArr => {
-    res.render("books/book-create", {authorsArr});
-  })
-  .catch( (error) => {
-    console.log("Error getting authors from DB", error);
-    next(error);
-  })
+    .then(authorsArr => {
+      res.render("books/book-create", { authorsArr });
+    })
+    .catch((error) => {
+      console.log("Error getting authors from DB", error);
+      next(error);
+    })
 
 })
 
-router.post("/books/create", (req, res) => {
+router.post("/books/create", checkIfLoggedIn, (req, res) => {
   const bookDetails = {
     title: req.body.title,
     author: req.body.author,
@@ -61,7 +65,7 @@ router.post("/books/create", (req, res) => {
 
 
 // READ: Book details, second
-router.get("/books/:bookId", (req, res) => {
+router.get("/books/:bookId", checkIfLoggedIn, (req, res) => {
   const bookId = req.params.bookId;
 
   Book.findById(bookId)
@@ -78,7 +82,7 @@ router.get("/books/:bookId", (req, res) => {
 
 // UPDATE: Render form, forth
 
-router.get("/books/:bookId/edit", (req, res) => {
+router.get("/books/:bookId/edit", checkIfLoggedIn, (req, res) => {
   //const bookId = req.params.bookId;
   const { bookId } = req.params;
 
@@ -94,7 +98,7 @@ router.get("/books/:bookId/edit", (req, res) => {
 });
 
 // UPDATE: Process form
-router.post("/books/:bookId/edit", (req, res) => {
+router.post("/books/:bookId/edit", checkIfLoggedIn, (req, res) => {
 
   const { bookId } = req.params;
   const { title, description, author, rating } = req.body;
@@ -111,7 +115,7 @@ router.post("/books/:bookId/edit", (req, res) => {
 });
 
 // DELETE: delete book, fifth
-router.post("/books/:bookId/delete", (req, res) => {
+router.post("/books/:bookId/delete", checkIfLoggedIn, (req, res) => {
   const { bookId } = req.params;
 
   Book.findByIdAndRemove(bookId)
