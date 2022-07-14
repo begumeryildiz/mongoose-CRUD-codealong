@@ -39,7 +39,7 @@ app.locals.appTitle = `${capitalized(projectName)} created with IronLauncher`;
 
 app.use("/", require("./routes/index.routes"));
 app.use("/", require("./routes/auth.routes"));
-app.use("/", require("./routes/book.routes"));
+app.use("/books", require("./routes/book.routes"));
 app.use("/", require("./routes/author.routes"));
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes

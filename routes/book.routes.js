@@ -9,7 +9,7 @@ const checkIfLoggedIn = require("../middleware/checkIfLoggedIn");
 
 
 // READ: List all books, first
-router.get("/books", (req, res, next) => {
+router.get("/", (req, res, next) => {
 
   Book.find()
     .populate("author")
@@ -31,7 +31,8 @@ router.get("/books", (req, res, next) => {
 
 
 // CREATE: Render form to create one book, third
-router.get("/books/create", checkIfLoggedIn, (req, res) => {
+// GET /books/create
+router.get("/create", checkIfLoggedIn, (req, res, next) => {
 
 
   Author.find()
@@ -45,7 +46,7 @@ router.get("/books/create", checkIfLoggedIn, (req, res) => {
 
 })
 
-router.post("/books/create", checkIfLoggedIn, (req, res) => {
+router.post("/create", checkIfLoggedIn, (req, res, next) => {
   const bookDetails = {
     title: req.body.title,
     author: req.body.author,
@@ -65,7 +66,7 @@ router.post("/books/create", checkIfLoggedIn, (req, res) => {
 
 
 // READ: Book details, second
-router.get("/books/:bookId", checkIfLoggedIn, (req, res) => {
+router.get("/:bookId", checkIfLoggedIn, (req, res, next) => {
   const bookId = req.params.bookId;
 
   Book.findById(bookId)
@@ -82,7 +83,7 @@ router.get("/books/:bookId", checkIfLoggedIn, (req, res) => {
 
 // UPDATE: Render form, forth
 
-router.get("/books/:bookId/edit", checkIfLoggedIn, (req, res) => {
+router.get("/:bookId/edit", checkIfLoggedIn, (req, res, next) => {
   //const bookId = req.params.bookId;
   const { bookId } = req.params;
 
@@ -98,7 +99,7 @@ router.get("/books/:bookId/edit", checkIfLoggedIn, (req, res) => {
 });
 
 // UPDATE: Process form
-router.post("/books/:bookId/edit", checkIfLoggedIn, (req, res) => {
+router.post("/:bookId/edit", checkIfLoggedIn, (req, res, next) => {
 
   const { bookId } = req.params;
   const { title, description, author, rating } = req.body;
@@ -115,7 +116,7 @@ router.post("/books/:bookId/edit", checkIfLoggedIn, (req, res) => {
 });
 
 // DELETE: delete book, fifth
-router.post("/books/:bookId/delete", checkIfLoggedIn, (req, res) => {
+router.post("/:bookId/delete", checkIfLoggedIn, (req, res, next) => {
   const { bookId } = req.params;
 
   Book.findByIdAndRemove(bookId)
